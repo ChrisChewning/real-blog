@@ -3,74 +3,112 @@ const router  = express.Router();
 const Author  = require('../models/authors');
 const Article = require('../models/articles');
 
-router.get('/', (req, res) => {
-  Author.find({}, (err, foundAuthors) => {
-      res.render('authors/index.ejs', {
-        authors: foundAuthors
-      });
-  });
+// INDEX
+router.get('/', async (req, res, err) => {
+  try {
+    console.log('hits index route')
+    const foundAuthors = await Author.find();
+    res.render('authors/index.ejs', {
+      authors: foundAuthors,
+    });
 
+  } catch (err){
+    res.send(err, ' error for index route')
+  }
 });
 
+
+
+// NEW
 router.get('/new', (req, res) => {
   res.render('authors/new.ejs');
 });
 
-
-router.get('/:id', (req, res) => {
-  Author.findById(req.params.id, (err, foundAuthor) => {
-    res.render('authors/show.ejs', {
-      author: foundAuthor
-    });
-  });
+// SHOW
+router.get('/:id', async (req, res) => {
+  try {
+console.log('hits the show page');
+const foundAuthor = await Author.findById(req.params.id);
+res.render('authors/show.ejs', {
+  author: foundAuthor,
 });
+  }  catch (err) {
+  res.send(err, ' error for show route');
+  }
+  });
 
-router.get('/:id/edit', (req, res) => {
 
-  Author.findById(req.params.id, (err, foundAuthor) => {
+
+// EDIT
+router.get('/:id/edit', async (req, res) => {
+  try {
+    console.log('hits the edit page')
+    const foundAuthor = await Author.findById(req.params.id);
     res.render('authors/edit.ejs', {
-      author: foundAuthor
+      author: foundAuthor,
     });
+  }  catch (err) {
+    res.send(err, ' error for edit route');
+  }
   });
 
+
+
+// PUT = UPDATE
+router.put('/:id', async (req, res) => {
+try {
+  console.log('hits the update page');
+  const updatedAuthor = await Author.findByIdAndUpdate(req.params.id, req.body, {new: true});
+  res.redirect('/authors')
+}
+catch (err) {
+  res.send(err, ' error for update route');
+}
 });
 
-router.put('/:id', (req, res) => {
-  Author.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, updatedAuthor)=> {
-    console.log(updatedAuthor, ' this is updatedAuthor');
-    res.redirect('/authors');
-  });
+
+
+
+//   Author.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, updatedAuthor)=> {
+//     console.log(updatedAuthor, ' this is updatedAuthor');
+//     res.redirect('/authors');
+//   });
+// });
+
+// CREATE
+router.post ('/', async (req, res) => {
+  try {
+  console.log(' hits the post route');
+  const newAuthor = await Author.create (req.body);
+
+  res.redirect('/authors');
+} catch (err){
+  res.send(err, ' not creating a post');
+}
 });
 
-
-router.post('/', (req, res) => {
-  console.log(req.body)
-  Author.create(req.body, (err, createdAuthor) => {
-    console.log(createdAuthor, ' this is the createdAuthor');
-    res.redirect('/authors');
-  });
-
-});
 
 // DELETE AN AUTHOR DELETE THE ASSOCIATED ARTICLES
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
+  try {
+    console.log('hits the delete in index')
+    const deletedAuthor = await
+    Author.findByIdAndRemove(req.params.id);
 
-  Author.findByIdAndRemove(req.params.id, (err, deletedAuthor) => {
-    console.log(deletedAuthor, ' this is deletedAuthor');
-    // We are collecting all of the Article Ids from the deletedAuthors
-    // articles property
     const articleIds = [];
     for(let i = 0; i < deletedAuthor.articles.length; i++){
       articleIds.push(deletedAuthor.articles[i].id);
     }
-
-    Article.remove({
+    await Article.remove({
       _id: { $in: articleIds}
-    }, (err, data) => {
-      res.redirect('/authors')
     });
+      res.redirect('/authors')
+
+  } catch (err) {
+    console.log(err, ' not deleting');
+    res.send(err, ' not deleting');
+  }
   });
-});
 
 
 

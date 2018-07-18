@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
   </head>
   <body>
     <header>
@@ -15,6 +17,8 @@
           <li>
             <a href="/articles">Articles Index</a>
           </li>
+          <li><a href="/auth/logout">Logout</a>
+          </li>
         </ul>
       </nav>
     </header>
@@ -23,7 +27,6 @@
         <select name="authorId">
           <% for( let i=0; i < authors.length; i++){%>
             <option value="<%=authors[i].id%>"><%=authors[i].name%></option>
-
           <% }%>
         </select><br/>
 

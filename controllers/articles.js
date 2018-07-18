@@ -4,13 +4,27 @@ const router = express.Router();
 const Article = require('../models/articles');
 const Author  = require('../models/authors');
 
+
+
 router.get('/', (req, res)=>{
+//if someone is logged in then show them the article page.
+if(req.session.loggedIn === true) {
+
   Article.find({}, (err, foundArticles)=>{
     res.render('articles/index.ejs', {
-      articles: foundArticles
+      articles: foundArticles,
+      username: req.session.username
     });
   })
+
+// or else send them back to the auth page so they can log in
+} else {
+  req.session.message = 'You have to be logged in for that.'
+  res.redirect('/auth')
+}
 });
+
+
 
 router.get('/new', (req, res)=>{
   Author.find({}, (err, allAuthors) => {
