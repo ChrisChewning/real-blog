@@ -79,7 +79,7 @@ catch (err) {
 router.post ('/', async (req, res) => {
   try {
   console.log(' hits the post route');
-  const newAuthor = await Author.create (req.body);
+  const newAuthor = await Author.create(req.body);
 
   res.redirect('/authors');
 } catch (err){

@@ -6,11 +6,21 @@
   </head>
   <body>
 
+
+
     <h4> Login</h4>
     <form action="/auth/login" method="POST">
       Username: <input type="text" name="username" placeholder="username"><br>
       Password: <input type="password" name="password" placeholder="password"> <br>
       <button type="submit">Login</button>
+
+    </form>
+
+    <h4> Register</h4>
+    <form action="/auth/register" method="POST">
+      Username: <input type="text" name="username" placeholder="username"><br>
+      Password: <input type="password" name="password" placeholder="password"> <br>
+      <button type="submit">Register</button>
 </form>
 
   <h5><%=message%></h5>
